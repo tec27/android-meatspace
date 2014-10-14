@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="horizontal">
+  <SurfaceView
+    android:id="@+id/Video"
+    android:layout_width="100dp"
+    android:layout_height="75dp"/>
+  <TextView
+    android:id="@+id/MessageText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:text="Oh hi how do I use this app are there multiple channels where are all the dicks"/>
+</LinearLayout>

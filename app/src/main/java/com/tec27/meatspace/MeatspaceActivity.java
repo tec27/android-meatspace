@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -21,7 +22,10 @@ import java.net.URISyntaxException;
 
 
 public class MeatspaceActivity extends Activity {
+  private final String TAG = MeatspaceActivity.class.getSimpleName();
 
+  private ListView chatList;
+  private MessageAdapter messageAdapter;
   private Socket socket;
 
   @Override
@@ -29,6 +33,9 @@ public class MeatspaceActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.meatspace_activity);
 
+    chatList = (ListView) findViewById(R.id.ChatList);
+    messageAdapter = new MessageAdapter(this);
+    chatList.setAdapter(messageAdapter);
 
     try {
       socket = IO.socket("https://chat.meatspac.es");
@@ -45,12 +52,13 @@ public class MeatspaceActivity extends Activity {
     }).on("message", new Emitter.Listener() {
       @Override
       public void call(Object... args) {
-        JSONObject message = (JSONObject) args[0];
-        try {
-          Log.d("tec27", message.getString("fingerprint") + ": " + message.getString("message"));
-        } catch (JSONException e) {
-          Log.e("tec27", "JSON error!", e);
-        }
+        final JSONObject message = (JSONObject) args[0];
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            messageAdapter.addItem(Message.fromJson(message));
+          }
+        });
       }
     });
 
