@@ -72,20 +72,28 @@ public class MessageAdapter extends BaseAdapter {
     private Message boundMessage;
     private SurfaceHolder videoHolder;
     private MediaPlayer mediaPlayer;
+    private MediaPlayer.OnPreparedListener onPreparedListener;
+    private boolean prepared = false;
 
     private ViewHolder(Context context, ViewGroup parent) {
       view = LayoutInflater.from(context).inflate(R.layout.message, parent, false);
       view.setTag(R.id.ViewHolder, this);
       messageText = (TextView) view.findViewById(R.id.MessageText);
       videoSurface = (SurfaceView) view.findViewById(R.id.Video);
-
+      onPreparedListener = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mediaPlayer) {
+          prepared = true;
+          playVideo();
+        }
+      };
 
       view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
         @Override
         public void onViewAttachedToWindow(View view) {
           mediaPlayer = new MediaPlayer();
+          mediaPlayer.setOnPreparedListener(onPreparedListener);
           openVideo();
-          playVideo();
         }
 
         @Override
@@ -141,20 +149,21 @@ public class MessageAdapter extends BaseAdapter {
         mediaPlayer.setDisplay(videoHolder);
         mediaPlayer.setDataSource(view.getContext(), boundMessage.getMediaUri());
         mediaPlayer.setLooping(true);
-        mediaPlayer.prepare();
+        mediaPlayer.prepareAsync();
       } catch (IOException e) {
         Log.d(TAG, "Error playing video", e);
       }
     }
 
     private void playVideo() {
-      if (mediaPlayer == null || videoHolder == null || boundMessage == null) {
+      if (!prepared || mediaPlayer == null || videoHolder == null || boundMessage == null) {
         return;
       }
       mediaPlayer.start();
     }
 
     private void resetVideo() {
+      prepared = false;
       if (mediaPlayer != null) {
         mediaPlayer.reset();
       }
