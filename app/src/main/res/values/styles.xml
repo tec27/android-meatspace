@@ -1,0 +1,9 @@
+<resources>
+  <style name="Theme.Meatspace" parent="@android:Theme.Holo.Light.DarkActionBar">
+    <item name="android:actionBarStyle">@style/Meatspace.ActionBar</item>
+  </style>
+
+  <style name="Meatspace.ActionBar" parent="@android:Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <item name="android:background">@color/action_bar_color</item>
+  </style>
+</resources>
